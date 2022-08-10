@@ -1,6 +1,6 @@
 name: 'Cancel Workflow Action'
 description: 'This Action will cancel any previous runs that are not `completed` for a given workflow.'
-author: styfle
+author: jmoll-hn
 branding:
   icon: 'stop-circle'
   color: 'white'
@@ -20,6 +20,10 @@ inputs:
     description: "Cancel all actions but the last one"
     required: false
     default: 'false'
+  status:
+    description: "For example `queued,in_progress,completed`, defaults to all except `completed`"
+    required: false
+    default: 'false'
 runs:
-  using: 'node12'
+  using: 'node16'
   main: 'dist/index.js'

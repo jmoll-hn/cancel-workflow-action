@@ -34,6 +34,11 @@ async function main() {
   const workflow_id = core.getInput('workflow_id', { required: false });
   const ignore_sha = core.getBooleanInput('ignore_sha', { required: false });
   const all_but_latest = core.getBooleanInput('all_but_latest', { required: false });
+  const status = core.getInput('status', { required: false });
+  const statuses = (status || '')
+    .split(',')
+    .map(n => n.trim())
+    .filter(n => !!n);
   console.log(`Found token: ${token ? 'yes' : 'no'}`);
   const workflow_ids: string[] = [];
   const octokit = github.getOctokit(token);
@@ -85,14 +90,19 @@ async function main() {
             .reduce((a, b) => Math.max(a, b), cancelBefore.getTime());
           cancelBefore = new Date(n);
         }
-        const runningWorkflows = workflow_runs.filter(
-          run =>
+        const runningWorkflows = workflow_runs.filter(run => {
+          const runStatus = run.status || '';
+          const statusCondition = statuses.length
+            ? statuses.includes(runStatus)
+            : runStatus !== 'completed';
+          return (
             run.head_repository.id === trigger_repo_id &&
             run.id !== current_run.id &&
             (ignore_sha || run.head_sha !== headSha) &&
-            run.status !== 'completed' &&
-            new Date(run.created_at) < cancelBefore,
-        );
+            statusCondition &&
+            new Date(run.created_at) < cancelBefore
+          );
+        });
         if (all_but_latest && new Date(current_run.created_at) < cancelBefore) {
           // Make sure we cancel this run itself if it's out-of-date.
           // We must cancel this run last so we can cancel the others first.
