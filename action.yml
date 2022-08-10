@@ -1,4 +1,4 @@
-name: 'Cancel Workflow Action'
+name: 'Cancel Workflow Runs By Status'
 description: 'This Action will cancel any previous runs that are not `completed` for a given workflow.'
 author: jmoll-hn
 branding:
