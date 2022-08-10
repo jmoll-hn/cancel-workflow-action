@@ -1,6 +1,6 @@
 name: 'Cancel Workflow Action'
 description: 'This Action will cancel any previous runs that are not `completed` for a given workflow.'
-author: styfle
+author: jmoll-hn
 branding:
   icon: 'stop-circle'
   color: 'white'
@@ -25,5 +25,5 @@ inputs:
     required: false
     default: 'false'
 runs:
-  using: 'node12'
+  using: 'node16'
   main: 'dist/index.js'
