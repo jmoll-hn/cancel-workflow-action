@@ -8940,6 +8940,9 @@ async function main() {
                 const statusCondition = statuses.length
                     ? statuses.includes(runStatus)
                     : runStatus !== 'completed';
+                if (!statusCondition) {
+                    console.log(`Skipping run ${run.id} with status ${run.status}`);
+                }
                 return (run.head_repository.id === trigger_repo_id &&
                     run.id !== current_run.id &&
                     (ignore_sha || run.head_sha !== headSha) &&
